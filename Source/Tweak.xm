@@ -132,7 +132,7 @@ void _ComponentEnemy_Update(void *componentEnemy){
 			currentTarget->health = potentialTargetHealth;
 		}
 
-		//make the Quaternion that will hold a rotation to force us to look at currentTarget
+		//make the Quaternion that will hold a rotation to currentTarget
 		lookRotation = Quaternion::LookRotation(currentTarget->location - me->location, Vector3(0, 1, 0));
 
 		//now, do some climbing to get the object we need to modify our rotation!
