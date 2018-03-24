@@ -9,8 +9,6 @@ Function naming conventions:
 #import "Macros.h"
 #import "Config.h"
 #import <substrate.h>
-#import <initializer_list>
-#import <vector>
 #import <mach-o/dyld.h>
 
 uint64_t getRealOffset(uint64_t);
