@@ -33,7 +33,7 @@ enemy_t *currentTarget;
 Quaternion lookRotation;
 
 void *(*Component_GetTransform)(void *component) = (void *(*)(void *))getRealOffset(0x100E6CBB4);
-void (*INTERNAL_GetPosition)(void *transform, Vector3 *vec) = (void (*)(void *, Vector3 *))getRealOffset(0x100ECE7E4);
+void (*Transform_INTERNAL_GetPosition)(void *transform, Vector3 *vec) = (void (*)(void *, Vector3 *))getRealOffset(0x100ECE7E4);
 
 void *(*ComponentPlayer_GetOwner)(void *componentPlayer) = (void *(*)(void *))getRealOffset(0x1001CB318);
 
@@ -49,7 +49,7 @@ void _ComponentPlayer_LateUpdate(void *componentPlayer){
 		void *myTransform = Component_GetTransform(me->object);
 		Vector3 myLocation;
 
-		INTERNAL_GetPosition(myTransform, &myLocation);
+		Transform_INTERNAL_GetPosition(myTransform, &myLocation);
 
 		me->location = myLocation;
 	}
@@ -84,7 +84,7 @@ void _ComponentEnemy_Update(void *componentEnemy){
 			void *enemyTransform = Component_GetTransform(componentEnemy);
 			Vector3 enemyLocation;
 
-			INTERNAL_GetPosition(enemyTransform, &enemyLocation);
+			Transform_INTERNAL_GetPosition(enemyTransform, &enemyLocation);
 
 			currentTarget->location = enemyLocation;
 			currentTarget->distanceFromMe = Vector3::distance(currentTarget->location, me->location);
@@ -99,7 +99,7 @@ void _ComponentEnemy_Update(void *componentEnemy){
 			void *enemyTransform = Component_GetTransform(componentEnemy);
 			Vector3 enemyLocation;
 
-			INTERNAL_GetPosition(enemyTransform, &enemyLocation);
+			Transform_INTERNAL_GetPosition(enemyTransform, &enemyLocation);
 
 			currentTarget->location = enemyLocation;
 			currentTarget->distanceFromMe = Vector3::distance(currentTarget->location, me->location);
@@ -116,13 +116,13 @@ void _ComponentEnemy_Update(void *componentEnemy){
 			return;
 		}
 
-        //try and find another target
+        	//try and find another target
 		float potentialTargetHealth = ComponentEnemy_GetCurrentHealth(componentEnemy);
 
 		void *potentialEnemyTransform = Component_GetTransform(componentEnemy);
 		Vector3 potentialEnemyLocation;
 
-		INTERNAL_GetPosition(potentialEnemyTransform, &potentialEnemyLocation);
+		Transform_INTERNAL_GetPosition(potentialEnemyTransform, &potentialEnemyLocation);
 
 		float potentialEnemyDistanceFromMe = Vector3::distance(potentialEnemyLocation, me->location);
 
@@ -137,6 +137,7 @@ void _ComponentEnemy_Update(void *componentEnemy){
 		//make the Quaternion that will hold a rotation to force us to look at currentTarget
 		lookRotation = Quaternion::LookRotation(currentTarget->location - me->location, Vector3(0, 1, 0));
 
+		//now, do some climbing to get the object we need to modify our rotation!
 		void *myOwner = ComponentPlayer_GetOwner(me->object);
 
 		if(myOwner){
